@@ -2,4 +2,6 @@
 cd /root/sdn-auth-main
 git add .
 git commit -m "Mise à jour automatique $(date)"
+git pull origin main --allow-unrelated-histories --no-edit
 git push origin main
+
