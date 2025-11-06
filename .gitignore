@@ -1,0 +1,10 @@
+# Exclusions permanentes
+logs/
+redis-data/
+grafana/
+loki-data/
+loki-wal/
+prometheus/
+*.log
+*.rdb
+*.aof
