@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>SDN Manager - PME</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --secondary: #6b7280;
+      --bg-overlay: rgba(255, 255, 255, 0.35); /* plus clair pour libérer l’image */
+      --text-dark: #111827;
+      --text-muted: #334155;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-image: url("estm.jpeg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      position: relative;
+      color: var(--text-dark);
+    }
+
+    /* ✅ Dégradé subtil sur toute la page */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0.15)
+      );
+      backdrop-filter: blur(1.5px);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-size: 2.2em;
+      text-align: center;
+      font-weight: 800;
+      text-shadow: 0 2px 3px rgba(0,0,0,0.4);
+    }
+
+    .subtitle {
+      color: #e2e8f0;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      color: #0f172a;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    .card h3 {
+      color: #0f172a;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-secondary { background: var(--secondary); color: white; }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 12px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .authenticated {
+      background: rgba(34, 197, 94, 0.2);
+      color: #14532d;
+      border: 1px solid #22c55e;
+    }
+
+    .unauthenticated {
+      background: rgba(239, 68, 68, 0.2);
+      color: #7f1d1d;
+      border: 1px solid #f87171;
+    }
+
+    pre {
+      background: rgba(15, 23, 42, 0.7);
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 0.9rem;
+      max-height: 400px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #e2e8f0;
+      font-size: 0.9em;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>SDN Management Console</h1>
+    <p class="subtitle">
+      Supervision centralisée et sécurisée du réseau SDN basée sur OIDC, OpenDaylight et VXLAN.
+    </p>
+
+    <div class="card">
+      <h3>Authentification</h3>
+      <div id="authStatus" class="status unauthenticated">Non authentifié</div>
+      <div>
+        <button id="loginBtn" class="btn btn-primary">Se connecter</button>
+        <button id="retryBtn" class="btn btn-warning" style="display:none;">Réessayer</button>
+        <button id="probeBtn" class="btn btn-secondary">Tester oauth2-proxy</button>
+        <button id="logoutBtn" class="btn btn-secondary" style="display:none;">Se déconnecter</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Actions OpenDaylight</h3>
+      <button id="getTopologyBtn" class="btn btn-success" disabled>Récupérer la topologie</button>
+      <button id="openODLBtn" class="btn btn-secondary">Ouvrir l'interface ODL</button>
+    </div>
+
+    <div class="card" id="adminCard" style="display:none;">
+      <h3>Espace Administrateur</h3>
+      <p class="muted">Visible uniquement pour les membres du groupe <code>admins</code>.</p>
+      <button id="allowBtn" class="btn btn-primary">Activer overlay (ajout de règles)</button>
+      <button id="lockBtn" class="btn btn-danger">Bloquer overlay (vider les règles)</button>
+      <button id="adminTopoBtn" class="btn btn-secondary">Afficher la topologie (résumé + brut)</button>
+    </div>
+
+    <div class="card">
+      <h3>Résultats</h3>
+      <pre id="output">// Prêt…</pre>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 – SDN Manager PME | Interface sécurisée pour microservices et réseaux virtuels
+  </footer>
+
+  <script>
+    const output = document.getElementById('output');
+    const authStatus = document.getElementById('authStatus');
+    const loginBtn = document.getElementById('loginBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const probeBtn = document.getElementById('probeBtn');
+    const getTopologyBtn = document.getElementById('getTopologyBtn');
+    const openODLBtn = document.getElementById('openODLBtn');
+    const adminCard = document.getElementById('adminCard');
+    const adminTopoBtn = document.getElementById('adminTopoBtn');
+    const allowBtn = document.getElementById('allowBtn');
+    const lockBtn  = document.getElementById('lockBtn');
+
+    const log = (title, data) => {
+      output.textContent =
+        (title ? title + '\n' : '') +
+        (data ? (typeof data === 'string' ? data : JSON.stringify(data, null, 2)) : '');
+    };
+
+    function setAuthenticated(isAuth, info=null) {
+      if (isAuth) {
+        authStatus.textContent = 'Authentifié';
+        authStatus.className = 'status authenticated';
+        loginBtn.style.display = 'none';
+        retryBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+        getTopologyBtn.disabled = false;
+
+        try {
+          const groups = Array.isArray(info?.groups) ? info.groups.map(g=>String(g).toLowerCase()) : [];
+          const isAdmin = groups.includes('admins');
+          adminCard.style.display = isAdmin ? 'block' : 'none';
+        } catch (_) { adminCard.style.display = 'none'; }
+      } else {
+        authStatus.textContent = 'Non authentifié';
+        authStatus.className = 'status unauthenticated';
+        loginBtn.style.display = 'inline-block';
+        retryBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+        getTopologyBtn.disabled = true;
+        adminCard.style.display = 'none';
+      }
+    }
+
+    async function checkAuth({silent=false} = {}) {
+      try {
+        const resp = await fetch('/api/health', { credentials: 'include' });
+        if (resp.status === 401) { 
+          setAuthenticated(false, null); 
+          if (!silent) log('Veuillez vous authentifier'); 
+          return false; 
+        }
+        if (!resp.ok) { 
+          setAuthenticated(false, null); 
+          if (!silent) log('Erreur API', await resp.text()); 
+          return false; 
+        }
+        const data = await resp.json();
+        setAuthenticated(Boolean(data?.authenticated), data);
+        if (!silent) log('Authentifié', data);
+        return Boolean(data?.authenticated);
+      } catch (e) { 
+        setAuthenticated(false, null); 
+        if (!silent) log('Erreur de communication', String(e)); 
+        return false; 
+      }
+    }
+
+    loginBtn.addEventListener('click', () => {
+      const rd = window.location.origin + '/';
+      window.location.href = '/oauth2/sign_in?rd=' + encodeURIComponent(rd);
+    });
+
+    retryBtn.addEventListener('click', async () => {
+      log('Vérification en cours...');
+      const isAuth = await checkAuth({silent:true});
+      if (isAuth) { log('Session déjà valide'); return; }
+      const rd = window.location.origin + '/';
+      window.location.href = '/oauth2/sign_in?rd=' + encodeURIComponent(rd);
+    });
+
+    probeBtn.addEventListener('click', async () => {
+      log('Test du service oauth2-proxy...');
+      try {
+        const r = await fetch('/oauth2/health', { credentials: 'include' });
+        const txt = await r.text();
+        log(r.ok ? 'oauth2-proxy opérationnel' : 'Problème oauth2-proxy', txt);
+      } catch (e) { 
+        log('oauth2-proxy injoignable', String(e)); 
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/oauth2/sign_out', { credentials: 'include', method: 'POST' });
+        setAuthenticated(false, null);
+        log('Déconnecté');
+      } catch (e) { log('Erreur', e); }
+    });
+
+    getTopologyBtn.addEventListener('click', async () => {
+      log('Récupération de la topologie...');
+      try {
+        const response = await fetch('/api/proxy/restconf/operational/network-topology:network-topology/', {
+          method: 'GET', 
+          headers: { 'Accept': 'application/yang-data+json' }, 
+          credentials: 'include'
+        });
+        const ct = response.headers.get('content-type') || ''; 
+        const isJson = ct.includes('json');
+        if (!response.ok) {
+          const body = isJson ? await response.json().catch(()=>({})) : await response.text();
+          log(`Erreur HTTP ${response.status}`, body); 
+          return;
+        }
+        const data = isJson ? await response.json() : await response.text();
+        log('Topologie réseau:', data);
+      } catch (e) { 
+        log('Erreur lors de la récupération', String(e)); 
+      }
+    });
+
+    adminTopoBtn.addEventListener('click', async () => {
+      log('Collecte de la topologie administrateur...');
+      try {
+        const r = await fetch('/api/proxy/restconf/operational/network-topology:network-topology/', { credentials: 'include' });
+        const d = await r.text();
+        log(`HTTP ${r.status} topology`, d);
+      } catch (e) { log('Erreur admin/topology', String(e)); }
+    });
+
+    allowBtn.addEventListener('click', async () => {
+      try{
+        const r = await fetch('/api/admin/overlay/allow', { method:'POST', credentials:'include' });
+        const d = await r.json().catch(()=>({}));
+        if (!r.ok) return log('Échec de l’activation', d);
+        log('Overlay activé (flows ARP + ICMP + 22 + 443 + règles de sécurité)', d);
+      } catch(e){ log('Erreur lors de l’activation', String(e)); }
+    });
+
+    lockBtn.addEventListener('click', async () => {
+      try{
+        const r = await fetch('/api/admin/overlay/lock', { method:'POST', credentials:'include' });
+        const d = await r.json().catch(()=>({}));
+        if (!r.ok) return log('Échec du blocage', d);
+        log('Overlay bloqué (table 0 nettoyée)', d);
+      } catch(e){ log('Erreur lors du blocage', String(e)); }
+    });
+
+    openODLBtn.addEventListener('click', () => 
+      window.open('http://sdn.ktech.sn:8181/index.html', '_blank')
+    );
+
+    (async () => { 
+      await checkAuth(); 
+      setInterval(()=>checkAuth({silent:true}), 30000); 
+    })();
+  </script>
+</body>
+</html>

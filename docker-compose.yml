@@ -1,0 +1,304 @@
+version: "3.8"
+
+networks:
+  sdn_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: sdn-nginx
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./logs/nginx:/var/log/nginx
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health | grep -q healthy || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  frontend:
+    image: nginx:1.25-alpine
+    container_name: sdn-frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    expose: ["80"]
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    image: node:18-alpine
+    container_name: sdn-backend
+    working_dir: /app
+    command: sh -c "npm install --omit=dev && node server.js"
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+      ODL_BASE: "http://odl:8181"
+      OPA_URL: http://opa:8181/v1/data/sdn/authz
+      REQUEST_TIMEOUT_MS: "15000"
+    volumes:
+      - ./backend:/app
+      - ./logs/backend:/var/log/backend
+    expose: ["4000"]
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health | grep -q '\"status\":\"OK\"' || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    extra_hosts:
+      - "sdn.ktech.sn:host-gateway"
+
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    container_name: sdn-oauth2-proxy
+    extra_hosts:
+      - "auth.ktech.sn:192.168.1.28"
+    environment:
+      OAUTH2_PROXY_PROVIDER: oidc
+      OAUTH2_PROXY_OIDC_ISSUER_URL: https://auth.ktech.sn:8443/realms/ESTM
+      OAUTH2_PROXY_CLIENT_ID: serveur-web-client
+      OAUTH2_PROXY_CLIENT_SECRET: AilLveF98ovvUWqbreqDJ9MCncqpsTBF
+      OAUTH2_PROXY_REDIRECT_URL: http://micro-services.ktech.sn:8080/oauth2/callback
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      OAUTH2_PROXY_PROFILE_URL: "https://auth.ktech.sn:8443/realms/ESTM/protocol/openid-connect/userinfo"
+      OAUTH2_PROXY_TOKEN_URL: "https://auth.ktech.sn:8443/realms/ESTM/protocol/openid-connect/token"
+      OAUTH2_PROXY_LOGIN_URL: "https://auth.ktech.sn:8443/realms/ESTM/protocol/openid-connect/auth"
+      OAUTH2_PROXY_SCOPE: "openid email profile"
+      OAUTH2_PROXY_OIDC_GROUPS_CLAIM: "groups"
+
+      OAUTH2_PROXY_SSL_INSECURE_SKIP_VERIFY: "true"
+      OAUTH2_PROXY_EMAIL_DOMAINS: "ktech.sn"
+
+      OAUTH2_PROXY_COOKIE_SECRET: Z6JpWcB7YpR2u3kQn9Tf4vX1s7L0a2D5
+      OAUTH2_PROXY_COOKIE_NAME: _sdn_oauth2
+      OAUTH2_PROXY_COOKIE_SAMESITE: lax
+      OAUTH2_PROXY_COOKIE_HTTPONLY: "true"
+      OAUTH2_PROXY_COOKIE_SECURE: "false"
+      OAUTH2_PROXY_COOKIE_EXPIRE: 168h
+      OAUTH2_PROXY_COOKIE_REFRESH: 1h
+
+      OAUTH2_PROXY_LOG_LEVEL: "debug"
+      OAUTH2_PROXY_SHOW_DEBUG_ON_ERROR: "true"
+
+      OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+      OAUTH2_PROXY_PASS_ACCESS_TOKEN: "true"
+      OAUTH2_PROXY_SET_AUTHORIZATION_HEADER: "true"
+      OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER: "true"
+
+      OAUTH2_PROXY_SKIP_AUTH_ROUTES: '^/metrics$$|^/oauth2/health$$'
+      OAUTH2_PROXY_HTTP_ADDRESS: "0.0.0.0:4180"
+      OAUTH2_PROXY_UPSTREAMS: "http://sdn-backend:4000/"
+      OAUTH2_PROXY_TIMEOUT: "30s"
+      OAUTH2_PROXY_CODE_CHALLENGE_METHOD: "S256"
+      OAUTH2_PROXY_WHITELIST_DOMAINS: "micro-services.ktech.sn:8080,.ktech.sn"
+      OAUTH2_PROXY_COOKIE_DOMAIN: "micro-services.ktech.sn"
+
+      OAUTH2_PROXY_SESSION_STORE_TYPE: "redis"
+      OAUTH2_PROXY_REDIS_CONNECTION_URL: "redis://redis:6379"
+    expose: ["4180"]
+    networks: [sdn_net]
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+      opa:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4180/ping"]
+      interval: 15s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
+  opa:
+    image: openpolicyagent/opa:0.63.0
+    container_name: policy-service
+    command: ["run", "--server", "--addr=0.0.0.0:8181", "/policies/policy.rego"]
+    volumes:
+      - ./policy-engine/policies:/policies:ro
+    expose: ["8181"]
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8181/health || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+
+  user-profile:
+    image: node:18-alpine
+    container_name: user-profile
+    working_dir: /app
+    command: sh -c "npm install --omit=dev && node server.js"
+    volumes:
+      - ./user-profile:/app
+    expose: ["4100"]
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4100/health | grep -q ok || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    user: "10001:10001"
+    volumes:
+      - ./loki:/etc/loki:ro
+      - ./loki-data:/loki:rw
+      - ./loki-wal:/wal:rw
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3100/ready >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  promtail:
+    image: grafana/promtail:2.9.4
+    container_name: promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - ./logs/nginx:/var/log/nginx:ro
+      - ./logs/backend:/var/log/backend:ro
+      - ./promtail/positions:/var/lib/promtail
+    networks: [sdn_net]
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: P@sser
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3001:3000"
+    networks: [sdn_net]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus:ro
+    ports:
+      - "9090:9090"
+    networks: [sdn_net]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: sdn-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./redis-data:/data
+    networks: [sdn_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+
+  # === OVS VXLAN (host net) ===
+  vxlan-ovs:
+    build: ./vxlan-ovs
+    container_name: vxlan-ovs
+    pid: host
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      BRIDGE_NAME: br-vx
+      VXLAN_KEY: 100
+      ODL_ADDR: "192.168.1.19:6653"
+      WAN_IF: "enp0s3"
+      LOCAL_IP: "192.168.1.12"
+      PEERS: "192.168.1.19"
+      MTU: 1450
+      OF_VERSION: OpenFlow13
+    network_mode: host
+    volumes:
+      - ./ovs-db:/etc/openvswitch
+      - ./ovs-log:/var/log/openvswitch
+      - /var/run/openvswitch:/var/run/openvswitch
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  # === Services overlay de test ===
+  sdn-ftp:
+    image: fauria/vsftpd
+    container_name: sdn-ftp
+    environment:
+      FTP_USER: demo
+      FTP_PASS: demo123
+      PASV_MIN_PORT: 21100
+      PASV_MAX_PORT: 21110
+    volumes:
+      - ./ftp-data:/home/vsftpd
+    networks: [sdn_net]
+    restart: unless-stopped
+
+  sdn-ssh:
+    image: lscr.io/linuxserver/openssh-server:latest
+    container_name: sdn-ssh
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD_ACCESS=true
+      - USER_NAME=demo
+      - USER_PASSWORD=demo123
+    networks: [sdn_net]
+    restart: unless-stopped
+
+  sdn-samba:
+    image: dperson/samba
+    container_name: sdn-samba
+    command: ["-S", "-s", "share;/data;yes;no;no;demo"]
+    environment:
+      - TZ=Africa/Dakar
+    volumes:
+      - ./samba-data:/data
+    networks: [sdn_net]
+    restart: unless-stopped
+
+ 

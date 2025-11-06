@@ -1,0 +1,34 @@
+# promtail/config.yml
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push 
+  # pas d'en-têtes quand auth_disabled
+
+scrape_configs:
+  - job_name: nginx
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: nginx
+          __path__: /var/log/nginx/*.log
+
+  - job_name: backend
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: backend
+          __path__: /var/log/backend/*.log
+  
+  - job_name: openvswitch
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: openvswitch
+          __path__: /var/log/openvswitch/*.log
+

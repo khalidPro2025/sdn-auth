@@ -1,0 +1,122 @@
+2025-09-19T00:36:54.349Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T00:36:54.523Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T00:37:04.532Z|00003|memory|INFO|5928 kB peak resident set size after 10.2 seconds
+2025-09-19T00:37:04.532Z|00004|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-19T10:02:08.721Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T10:02:08.794Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T10:02:08.941Z|00003|jsonrpc|WARN|unix#1: receive error: Connection reset by peer
+2025-09-19T10:02:08.941Z|00004|reconnect|WARN|unix#1: connection dropped (Connection reset by peer)
+2025-09-19T10:02:09.937Z|00005|jsonrpc|WARN|unix#6: send error: Broken pipe
+2025-09-19T10:02:09.937Z|00006|reconnect|WARN|unix#6: connection dropped (Broken pipe)
+2025-09-19T10:02:10.554Z|00007|jsonrpc|WARN|unix#11: receive error: Connection reset by peer
+2025-09-19T10:02:10.554Z|00008|reconnect|WARN|unix#11: connection dropped (Connection reset by peer)
+2025-09-19T10:02:18.810Z|00009|memory|INFO|6184 kB peak resident set size after 10.1 seconds
+2025-09-19T10:02:18.810Z|00010|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-19T12:23:16.716Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T12:23:16.947Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T12:23:17.110Z|00003|jsonrpc|WARN|unix#0: send error: Broken pipe
+2025-09-19T12:23:17.110Z|00004|reconnect|WARN|unix#0: connection dropped (Broken pipe)
+2025-09-19T12:23:18.833Z|00005|jsonrpc|WARN|unix#7: send error: Broken pipe
+2025-09-19T12:23:18.833Z|00006|reconnect|WARN|unix#7: connection dropped (Broken pipe)
+2025-09-19T12:23:19.465Z|00007|jsonrpc|WARN|unix#11: send error: Broken pipe
+2025-09-19T12:23:19.466Z|00008|reconnect|WARN|unix#11: connection dropped (Broken pipe)
+2025-09-19T12:23:27.000Z|00009|memory|INFO|6312 kB peak resident set size after 10.3 seconds
+2025-09-19T12:23:27.000Z|00010|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-19T17:31:58.310Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T17:31:58.382Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T17:31:59.817Z|00003|jsonrpc|WARN|unix#4: send error: Broken pipe
+2025-09-19T17:31:59.817Z|00004|reconnect|WARN|unix#4: connection dropped (Broken pipe)
+2025-09-19T17:32:00.816Z|00005|jsonrpc|WARN|unix#7: send error: Broken pipe
+2025-09-19T17:32:00.816Z|00006|reconnect|WARN|unix#7: connection dropped (Broken pipe)
+2025-09-19T17:32:01.119Z|00007|jsonrpc|WARN|unix#8: send error: Broken pipe
+2025-09-19T17:32:01.119Z|00008|reconnect|WARN|unix#8: connection dropped (Broken pipe)
+2025-09-19T17:32:08.404Z|00009|memory|INFO|6056 kB peak resident set size after 10.1 seconds
+2025-09-19T17:32:08.404Z|00010|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-19T17:51:03.488Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T17:51:03.520Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T17:51:03.609Z|00003|jsonrpc|WARN|unix#1: send error: Broken pipe
+2025-09-19T17:51:03.609Z|00004|reconnect|WARN|unix#1: connection dropped (Broken pipe)
+2025-09-19T17:51:13.532Z|00005|memory|INFO|6056 kB peak resident set size after 10.0 seconds
+2025-09-19T17:51:13.532Z|00006|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-19T20:30:54.091Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T20:30:54.238Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T20:30:56.055Z|00003|jsonrpc|WARN|unix#3: send error: Broken pipe
+2025-09-19T20:30:56.055Z|00004|reconnect|WARN|unix#3: connection dropped (Broken pipe)
+2025-09-19T20:31:04.276Z|00005|memory|INFO|6184 kB peak resident set size after 10.2 seconds
+2025-09-19T20:31:04.276Z|00006|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-19T22:01:27.295Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-19T22:01:27.348Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-19T22:01:27.371Z|00003|jsonrpc|WARN|unix#0: receive error: Connection reset by peer
+2025-09-19T22:01:27.371Z|00004|reconnect|WARN|unix#0: connection dropped (Connection reset by peer)
+2025-09-19T22:01:37.363Z|00005|memory|INFO|6184 kB peak resident set size after 10.1 seconds
+2025-09-19T22:01:37.363Z|00006|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-20T14:24:23.256Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-20T14:24:23.338Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-20T14:24:23.524Z|00003|jsonrpc|WARN|unix#1: receive error: Connection reset by peer
+2025-09-20T14:24:23.524Z|00004|reconnect|WARN|unix#1: connection dropped (Connection reset by peer)
+2025-09-20T14:24:25.647Z|00005|jsonrpc|WARN|unix#8: send error: Broken pipe
+2025-09-20T14:24:25.647Z|00006|reconnect|WARN|unix#8: connection dropped (Broken pipe)
+2025-09-20T14:24:33.369Z|00007|memory|INFO|6184 kB peak resident set size after 10.1 seconds
+2025-09-20T14:24:33.369Z|00008|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-21T10:43:01.216Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-21T10:43:01.346Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-21T10:43:02.780Z|00003|jsonrpc|WARN|unix#3: send error: Broken pipe
+2025-09-21T10:43:02.780Z|00004|reconnect|WARN|unix#3: connection dropped (Broken pipe)
+2025-09-21T10:43:11.357Z|00005|memory|INFO|6056 kB peak resident set size after 10.1 seconds
+2025-09-21T10:43:11.357Z|00006|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-21T11:06:12.421Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-21T11:06:12.659Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-21T11:06:12.870Z|00003|jsonrpc|WARN|unix#0: receive error: Connection reset by peer
+2025-09-21T11:06:12.870Z|00004|reconnect|WARN|unix#0: connection dropped (Connection reset by peer)
+2025-09-21T11:06:13.865Z|00005|jsonrpc|WARN|unix#5: send error: Broken pipe
+2025-09-21T11:06:13.865Z|00006|reconnect|WARN|unix#5: connection dropped (Broken pipe)
+2025-09-21T11:06:14.629Z|00007|jsonrpc|WARN|unix#11: receive error: Connection reset by peer
+2025-09-21T11:06:14.629Z|00008|reconnect|WARN|unix#11: connection dropped (Connection reset by peer)
+2025-09-21T11:06:22.675Z|00009|memory|INFO|6312 kB peak resident set size after 10.3 seconds
+2025-09-21T11:06:22.675Z|00010|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-21T11:17:17.732Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-21T11:17:17.853Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-21T11:17:19.338Z|00003|jsonrpc|WARN|unix#5: send error: Broken pipe
+2025-09-21T11:17:19.338Z|00004|reconnect|WARN|unix#5: connection dropped (Broken pipe)
+2025-09-21T11:17:19.873Z|00005|jsonrpc|WARN|unix#11: send error: Broken pipe
+2025-09-21T11:17:19.873Z|00006|reconnect|WARN|unix#11: connection dropped (Broken pipe)
+2025-09-21T11:17:27.865Z|00007|memory|INFO|6056 kB peak resident set size after 10.1 seconds
+2025-09-21T11:17:27.865Z|00008|memory|INFO|atoms:215 cells:275 monitors:2 sessions:1
+2025-09-21T11:38:19.570Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-21T11:38:19.660Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-21T11:38:34.963Z|00003|memory|INFO|5928 kB peak resident set size after 10.1 seconds
+2025-09-21T11:38:34.963Z|00004|memory|INFO|atoms:225 cells:275 monitors:2 sessions:1
+2025-09-22T10:53:31.606Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T10:53:31.816Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T10:53:31.886Z|00003|jsonrpc|WARN|unix#0: receive error: Connection reset by peer
+2025-09-22T10:53:31.886Z|00004|reconnect|WARN|unix#0: connection dropped (Connection reset by peer)
+2025-09-22T10:53:33.029Z|00005|jsonrpc|WARN|unix#3: receive error: Connection reset by peer
+2025-09-22T10:53:33.029Z|00006|reconnect|WARN|unix#3: connection dropped (Connection reset by peer)
+2025-09-22T10:53:41.847Z|00007|memory|INFO|6056 kB peak resident set size after 10.2 seconds
+2025-09-22T10:53:41.847Z|00008|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-22T11:02:51.340Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T11:02:51.452Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T11:03:01.474Z|00003|memory|INFO|6184 kB peak resident set size after 10.1 seconds
+2025-09-22T11:03:01.477Z|00004|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-22T12:25:19.642Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T12:25:19.751Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T12:25:35.533Z|00003|memory|INFO|5928 kB peak resident set size after 10.1 seconds
+2025-09-22T12:25:35.533Z|00004|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-22T14:07:44.641Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T14:07:45.249Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T14:07:45.779Z|00003|jsonrpc|WARN|unix#1: send error: Broken pipe
+2025-09-22T14:07:45.779Z|00004|reconnect|WARN|unix#1: connection dropped (Broken pipe)
+2025-09-22T14:07:55.279Z|00005|memory|INFO|6056 kB peak resident set size after 10.6 seconds
+2025-09-22T14:07:55.279Z|00006|memory|INFO|atoms:224 cells:275 monitors:2 sessions:1
+2025-09-22T14:56:49.154Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T14:56:49.378Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T14:56:54.200Z|00003|jsonrpc|WARN|unix#7: receive error: Connection reset by peer
+2025-09-22T14:56:54.208Z|00004|reconnect|WARN|unix#7: connection dropped (Connection reset by peer)
+2025-09-22T14:56:59.444Z|00005|memory|INFO|6184 kB peak resident set size after 10.3 seconds
+2025-09-22T14:56:59.444Z|00006|memory|INFO|atoms:407 cells:458 monitors:2 sessions:1
+2025-09-22T15:29:18.226Z|00001|vlog|INFO|opened log file /var/log/openvswitch/ovsdb-server.log
+2025-09-22T15:29:18.900Z|00002|ovsdb_server|INFO|ovsdb-server (Open vSwitch) 2.17.9
+2025-09-22T15:29:20.363Z|00003|jsonrpc|WARN|unix#1: send error: Broken pipe
+2025-09-22T15:29:20.363Z|00004|reconnect|WARN|unix#1: connection dropped (Broken pipe)
+2025-09-22T15:29:28.902Z|00005|memory|INFO|6056 kB peak resident set size after 10.7 seconds
+2025-09-22T15:29:28.902Z|00006|memory|INFO|atoms:279 cells:458 monitors:2 sessions:1

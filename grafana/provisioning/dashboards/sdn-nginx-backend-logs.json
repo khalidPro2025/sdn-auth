@@ -1,0 +1,19 @@
+{
+  "title": "SDN Logs (Nginx & Backend)",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "Nginx",
+      "targets": [{ "expr": "{job=\"nginx\"}" }],
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "type": "logs",
+      "title": "Backend",
+      "targets": [{ "expr": "{job=\"backend\"}" }],
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 12 }
+    }
+  ],
+  "schemaVersion": 37,
+  "version": 1
+}
